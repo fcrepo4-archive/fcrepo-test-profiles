@@ -22,6 +22,7 @@ On each node:
         <jgroups.tcp.address>172.27.244.223</jgroups.tcp.address>
         <!-- your cluster host name, port -->
         <jgroups.tcpping.initial_hosts>Fedora4-Master.example.com[7800]</jgroups.tcpping.initial_hosts>
+        <!-- cargo will give this much memory to the jetty container -->
         <max.memory>2g</max.memory>
       </properties>
     </profile>
