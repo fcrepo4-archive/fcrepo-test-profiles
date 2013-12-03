@@ -1,7 +1,7 @@
 fcrepo-test-profiles
 ====================
 
-Runs fcrepo performance tests again a documented test profile.
+Runs fcrepo performance tests against a documented test profile.
 
 Step-by-step
 ------------
