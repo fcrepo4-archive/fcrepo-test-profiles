@@ -1,11 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-<!--   <parent>
-    <groupId>org.fcrepo</groupId>
-    <artifactId>fcrepo</artifactId>
-    <version>4.0.0-alpha-3-SNAPSHOT</version>
-  </parent> -->
   <artifactId>fcrepo-test-profiles</artifactId>
   <groupId>org.fcrepo</groupId>
   <version>0.0.1-SNAPSHOT</version>
@@ -32,11 +27,29 @@
     </dependency>
   </dependencies>
   
-  
-
   <profiles>
+  
     <profile>
-      <id>scale-50</id>
+      <id>localhost-config</id>
+      <!-- local test machine configuration items -->
+      <!-- put a profile like this in your maven settings.xml file
+           then configure a storage directory. You can make your
+           local config activeByDefault. YMMV, depending upon
+           if a shared home directory is mapped on nodes.-->
+      <properties>
+        <!-- local node storage -->
+        <fcrepo.store.fast>/data/tests/stores</fcrepo.store.fast>
+        <fcrepo.store.slow>/data/tests/stores</fcrepo.store.slow>
+        <!-- local node ip -->
+        <jgroups.tcp.address>127.0.0.1</jgroups.tcp.address>
+        <!-- cluster host name, port -->
+        <jgroups.tcpping.initial_hosts>locahost.localdomain[7800]</jgroups.tcpping.initial_hosts>
+        <max.memory>2g</max.memory>
+      </properties>
+    </profile>
+  
+    <profile>
+      <id>scale-100x50mb</id>
       <properties>
         <data.size>52428800</data.size>
         <number.objects>100</number.objects>
@@ -44,7 +57,7 @@
       </properties>
     </profile>
     <profile>
-      <id>crud-workflow</id>
+      <id>workflow-crud</id>
       <build>
       <plugins>
       <plugin>
@@ -55,6 +68,7 @@
             <phase>integration-test</phase>
             <configuration>
               <tasks>
+                <input message="Start other cluster nodes, then press Return key to continue..."/>
                 <taskdef name="benchrun" classname="org.fcrepo.test.profiles.ant.Benchrun" classpath="target/classes"/>
                 <benchrun datasize="${data.size}" numObjects="${number.objects}" threads="${threads}" operation="ingest" uri="http://localhost:${test.port}/fedora"/>
                 <benchrun datasize="${data.size}" numObjects="${number.objects}" threads="${threads}" operation="read" uri="http://localhost:${test.port}/fedora"/>
@@ -79,29 +93,16 @@
       </build>
     </profile>
     <profile>
-      <id>machine-config</id>
-      <!-- local test machine configuration items -->
-      <!-- put a profile like this in your maven settings.xml file -->
+      <id>platform-cluster-baseline</id>
       <properties>
-        <!-- local node storage -->
-        <fcrepo.store.fast>/data/tests/stores</fcrepo.store.fast>
-        <fcrepo.store.slow>/data/tests/stores</fcrepo.store.slow>
-        <!-- local node ip -->
-        <jgroups.tcp.address>127.0.0.1</jgroups.tcp.address>
-        <!-- cluster host name, port -->
-        <jgroups.tcpping.initial_hosts>locahost.localdomain[7800]</jgroups.tcpping.initial_hosts>
-      </properties>
-    </profile>
-    <profile>
-      <id>cluster-baseline</id>
-      <properties>
+        <number.of.hosts>2</number.of.hosts>
         <fcrepo.infinispan.cache_configuration>classpath:/clustered/infinispan.xml</fcrepo.infinispan.cache_configuration>
         <fcrepo.modeshape.configuration>classpath:/clustered/repository.json</fcrepo.modeshape.configuration>
         <fcrepo.ispn.jgroups.configuration>classpath:/clustered/jgroups-fcrepo-tcp.xml</fcrepo.ispn.jgroups.configuration>
       </properties>
     </profile>
     <profile>
-      <id>cluster-config-fast</id>
+      <id>platform-cluster-fast</id>
       <!-- activate this profile when you want maven to filter stock cluster config files -->
       <properties>
         <number.of.hosts>1</number.of.hosts>
@@ -162,6 +163,7 @@
           <configuration>
             <properties>
               <cargo.servlet.port>${test.port}</cargo.servlet.port>
+              <cargo.jvmargs>-Xmx${max.memory}</cargo.jvmargs>
             </properties>
           </configuration>
           <!-- Container configuration -->
@@ -211,29 +213,6 @@
             <phase>post-integration-test</phase>
             <goals>
               <goal>stop</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <version>1.7</version>
-        <executions>
-          <execution>
-            <phase>integration-test</phase>
-            <configuration>
-              <tasks>
-                <sleep seconds="10"/>
-                <!-- <exec
-                  dir="${basedir}"
-                  executable="${basedir}/src/main/sh/do-something.sh"
-                  failonerror="true">
-                  <arg line="arg1 arg2 arg3 arg4" />
-                </exec> -->
-              </tasks>
-            </configuration>
-            <goals>
-              <goal>run</goal>
             </goals>
           </execution>
         </executions>
