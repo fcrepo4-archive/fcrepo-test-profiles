@@ -30,7 +30,7 @@
   <profiles>
   
     <profile>
-      <id>localhost-config</id>
+      <id>node-config-example</id>
       <!-- local test machine configuration items -->
       <!-- put a profile like this in your maven settings.xml file
            then configure a storage directory. You can make your
@@ -48,16 +48,53 @@
       </properties>
     </profile>
   
+    <!-- These configs are mutually exclusive cluster configurations that define the platform. -->
     <profile>
-      <id>scale-100x50mb</id>
+      <id>platform-cluster-baseline</id>
+      <properties>
+        <number.of.hosts>2</number.of.hosts>
+        <fcrepo.infinispan.cache_configuration>classpath:/clustered/infinispan.xml</fcrepo.infinispan.cache_configuration>
+        <fcrepo.modeshape.configuration>classpath:/clustered/repository.json</fcrepo.modeshape.configuration>
+        <fcrepo.ispn.jgroups.configuration>classpath:/clustered/jgroups-fcrepo-tcp.xml</fcrepo.ispn.jgroups.configuration>
+      </properties>
+    </profile>
+    <profile>
+      <id>platform-cluster-fast</id>
+      <!-- activate this profile when you want maven to filter stock cluster config files -->
+      <properties>
+        <number.of.hosts>1</number.of.hosts>
+        <fcrepo.infinispan.cache_configuration>target/classes/clustered/infinispan.xml</fcrepo.infinispan.cache_configuration>
+        <fcrepo.modeshape.configuration>target/classes/clustered/repository.json</fcrepo.modeshape.configuration>
+        <fcrepo.ispn.jgroups.configuration>target/classes/clustered-tcp/jgroups-fcrepo-tcp.xml</fcrepo.ispn.jgroups.configuration>
+      </properties>
+    </profile>
+  
+    <!-- A setup profile tells tests how many objects of what type to preload, before tests -->
+    <profile>
+      <id>setup-100o-50mb-3t</id>
       <properties>
         <data.size>52428800</data.size>
         <number.objects>100</number.objects>
         <threads>3</threads>
       </properties>
     </profile>
+    
+    <!-- A repository profiles tells tests how many objects of what type to use as test data. -->
     <profile>
-      <id>workflow-crud</id>
+      <id>repository-100o-50mb-3t</id>
+      <properties>
+        <data.size>52428800</data.size>
+        <number.objects>100</number.objects>
+        <threads>3</threads>
+      </properties>
+    </profile>
+    
+    <!-- Defines the operations that make up a test, including setup tasks. -->
+    <profile>
+      <id>workflow-profile</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
       <build>
       <plugins>
       <plugin>
@@ -70,6 +107,7 @@
               <tasks>
                 <input message="Start other cluster nodes, then press Return key to continue..."/>
                 <taskdef name="benchrun" classname="org.fcrepo.test.profiles.ant.Benchrun" classpath="target/classes"/>
+                <!-- setup tasks go here if we ever need them.. -->
                 <benchrun datasize="${data.size}" numObjects="${number.objects}" threads="${threads}" operation="ingest" uri="http://localhost:${test.port}/fedora"/>
                 <benchrun datasize="${data.size}" numObjects="${number.objects}" threads="${threads}" operation="read" uri="http://localhost:${test.port}/fedora"/>
                 <benchrun datasize="${data.size}" numObjects="${number.objects}" threads="${threads}" operation="update" uri="http://localhost:${test.port}/fedora"/>
@@ -91,25 +129,6 @@
       </plugin>
       </plugins>
       </build>
-    </profile>
-    <profile>
-      <id>platform-cluster-baseline</id>
-      <properties>
-        <number.of.hosts>2</number.of.hosts>
-        <fcrepo.infinispan.cache_configuration>classpath:/clustered/infinispan.xml</fcrepo.infinispan.cache_configuration>
-        <fcrepo.modeshape.configuration>classpath:/clustered/repository.json</fcrepo.modeshape.configuration>
-        <fcrepo.ispn.jgroups.configuration>classpath:/clustered/jgroups-fcrepo-tcp.xml</fcrepo.ispn.jgroups.configuration>
-      </properties>
-    </profile>
-    <profile>
-      <id>platform-cluster-fast</id>
-      <!-- activate this profile when you want maven to filter stock cluster config files -->
-      <properties>
-        <number.of.hosts>1</number.of.hosts>
-        <fcrepo.infinispan.cache_configuration>target/classes/clustered/infinispan.xml</fcrepo.infinispan.cache_configuration>
-        <fcrepo.modeshape.configuration>target/classes/clustered/repository.json</fcrepo.modeshape.configuration>
-        <fcrepo.ispn.jgroups.configuration>target/classes/clustered-tcp/jgroups-fcrepo-tcp.xml</fcrepo.ispn.jgroups.configuration>
-      </properties>
     </profile>
   </profiles>
 
