@@ -1,0 +1,243 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+<!--   <parent>
+    <groupId>org.fcrepo</groupId>
+    <artifactId>fcrepo</artifactId>
+    <version>4.0.0-alpha-3-SNAPSHOT</version>
+  </parent> -->
+  <artifactId>fcrepo-test-profiles</artifactId>
+  <groupId>org.fcrepo</groupId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>fcrepo-test-profiles</name>
+  
+  <dependencies>
+    <dependency>
+      <groupId>org.fcrepo</groupId>
+      <artifactId>fcrepo-webapp</artifactId>
+      <version>4.0.0-alpha-3-SNAPSHOT</version>
+      <type>war</type>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.ant</groupId>
+      <artifactId>ant</artifactId>
+      <version>1.7.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.fcrepo.bench</groupId>
+      <artifactId>bench-tool</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
+  
+  
+
+  <profiles>
+    <profile>
+      <id>scale-50</id>
+      <properties>
+        <data.size>52428800</data.size>
+        <number.objects>100</number.objects>
+        <threads>3</threads>
+      </properties>
+    </profile>
+    <profile>
+      <id>crud-workflow</id>
+      <build>
+      <plugins>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.7</version>
+        <executions>
+          <execution>
+            <phase>integration-test</phase>
+            <configuration>
+              <tasks>
+                <taskdef name="benchrun" classname="org.fcrepo.test.profiles.ant.Benchrun" classpath="target/classes"/>
+                <benchrun datasize="${data.size}" numObjects="${number.objects}" threads="${threads}" operation="ingest" uri="http://localhost:${test.port}/fedora"/>
+                <benchrun datasize="${data.size}" numObjects="${number.objects}" threads="${threads}" operation="read" uri="http://localhost:${test.port}/fedora"/>
+                <benchrun datasize="${data.size}" numObjects="${number.objects}" threads="${threads}" operation="update" uri="http://localhost:${test.port}/fedora"/>
+                <benchrun datasize="${data.size}" numObjects="${number.objects}" threads="${threads}" operation="delete" uri="http://localhost:${test.port}/fedora"/>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.fcrepo.bench</groupId>
+            <artifactId>bench-tool</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+      </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>machine-config</id>
+      <!-- local test machine configuration items -->
+      <!-- put a profile like this in your maven settings.xml file -->
+      <properties>
+        <!-- local node storage -->
+        <fcrepo.store.fast>/data/tests/stores</fcrepo.store.fast>
+        <fcrepo.store.slow>/data/tests/stores</fcrepo.store.slow>
+        <!-- local node ip -->
+        <jgroups.tcp.address>127.0.0.1</jgroups.tcp.address>
+        <!-- cluster host name, port -->
+        <jgroups.tcpping.initial_hosts>locahost.localdomain[7800]</jgroups.tcpping.initial_hosts>
+      </properties>
+    </profile>
+    <profile>
+      <id>cluster-baseline</id>
+      <properties>
+        <fcrepo.infinispan.cache_configuration>classpath:/clustered/infinispan.xml</fcrepo.infinispan.cache_configuration>
+        <fcrepo.modeshape.configuration>classpath:/clustered/repository.json</fcrepo.modeshape.configuration>
+        <fcrepo.ispn.jgroups.configuration>classpath:/clustered/jgroups-fcrepo-tcp.xml</fcrepo.ispn.jgroups.configuration>
+      </properties>
+    </profile>
+    <profile>
+      <id>cluster-config-fast</id>
+      <!-- activate this profile when you want maven to filter stock cluster config files -->
+      <properties>
+        <number.of.hosts>1</number.of.hosts>
+        <fcrepo.infinispan.cache_configuration>target/classes/clustered/infinispan.xml</fcrepo.infinispan.cache_configuration>
+        <fcrepo.modeshape.configuration>target/classes/clustered/repository.json</fcrepo.modeshape.configuration>
+        <fcrepo.ispn.jgroups.configuration>target/classes/clustered-tcp/jgroups-fcrepo-tcp.xml</fcrepo.ispn.jgroups.configuration>
+      </properties>
+    </profile>
+  </profiles>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+  
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+        <includes>
+          <include>**/*.json</include>
+          <include>**/*.json</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>src/main/resources</directory>
+        <excludes>
+          <exclude>**/*.json</exclude>
+        </excludes>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>reserve-network-port</id>
+            <goals>
+              <goal>reserve-network-port</goal>
+            </goals>
+            <phase>process-resources</phase>
+            <configuration>
+              <portNames>
+                <portName>test.port</portName>
+                <portName>jms.port</portName>
+                <portName>stomp.port</portName>
+                <portName>stop.port</portName>
+              </portNames>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.cargo</groupId>
+        <artifactId>cargo-maven2-plugin</artifactId>
+        <configuration>
+          <configuration>
+            <properties>
+              <cargo.servlet.port>${test.port}</cargo.servlet.port>
+            </properties>
+          </configuration>
+          <!-- Container configuration -->
+          <container>
+            <containerId>jetty9x</containerId>
+            <type>embedded</type>
+            <systemProperties>
+              <jms.port>${jms.port}</jms.port>
+              <stomp.port>${stomp.port}</stomp.port>
+              <STOP.PORT>${stop.port}</STOP.PORT>
+              <STOP.KEY>cargo-test-profiles</STOP.KEY>
+              
+              <!-- cluster config -->
+              <jgroups.tcp.address>${jgroups.tcp.address}</jgroups.tcp.address>
+              <jgroups.tcpping.initial_hosts>${jgroups.tcpping.initial_hosts}</jgroups.tcpping.initial_hosts>
+              
+              <!-- fedora storage -->
+              <fcrepo.ispn.repo.CacheDirPath>${fcrepo.store.slow}/fir</fcrepo.ispn.repo.CacheDirPath>
+              <fcrepo.modeshape.index.location>${fcrepo.store.fast}/fmi</fcrepo.modeshape.index.location>
+              <fcrepo.ispn.binary.CacheDirPath>${fcrepo.store.slow}/fib</fcrepo.ispn.binary.CacheDirPath>
+              <fcrepo.ispn.CacheDirPath>${fcrepo.store.slow}/fi</fcrepo.ispn.CacheDirPath>
+            </systemProperties>
+          </container>
+          <!-- Configuration to use with the container or the deployer -->
+          <deployables>
+            <deployable>
+              <groupId>org.fcrepo</groupId>
+              <artifactId>fcrepo-webapp</artifactId>
+              <type>war</type>
+              <properties>
+                <context>fedora</context>
+              </properties>
+            </deployable>
+          </deployables>
+          <!-- Don't wait, execute the tests after the container is started -->
+        </configuration>
+        <executions>
+          <execution>
+            <id>start-container</id>
+            <phase>pre-integration-test</phase>
+            <goals>
+              <goal>start</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>stop-container</id>
+            <phase>post-integration-test</phase>
+            <goals>
+              <goal>stop</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.7</version>
+        <executions>
+          <execution>
+            <phase>integration-test</phase>
+            <configuration>
+              <tasks>
+                <sleep seconds="10"/>
+                <!-- <exec
+                  dir="${basedir}"
+                  executable="${basedir}/src/main/sh/do-something.sh"
+                  failonerror="true">
+                  <arg line="arg1 arg2 arg3 arg4" />
+                </exec> -->
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>
