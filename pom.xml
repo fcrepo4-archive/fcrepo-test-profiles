@@ -85,7 +85,7 @@
     
     <!-- A repository profiles tells tests how many objects of what type to use as test data. -->
     <profile>
-      <id>repository-100o-50mb-3t</id>
+<!--       <id>repository-100o-50mb-3t</id> -->
       <properties>
         <data.size>52428800</data.size>
         <number.objects>100</number.objects>
@@ -192,7 +192,7 @@
               
               <!-- cluster config -->
               <jgroups.tcp.address>${jgroups.tcp.address}</jgroups.tcp.address>
-              <jgroups.tcpping.initial_hosts>${jgroups.tcpping.initial_hosts}</jgroups.tcpping.initial_hosts>
+              <jgroups.tcpping.initial_hosts>${host.ip}</jgroups.tcpping.initial_hosts>
               
               <!-- config files -->
               <fcrepo.infinispan.cache_configuration>${fcrepo.infinispan.cache_configuration}</fcrepo.infinispan.cache_configuration>
@@ -216,7 +216,7 @@
               <properties>
                 <context>fedora</context>
               </properties>
-              <pingURL>http://${fedora.host}:${http.port}/fedora/rest/</pingURL>
+              <pingURL>http://${host.ip}:${http.port}/fedora/rest/</pingURL>
             </deployable>
           </deployables>
           <!-- Don't wait, execute the tests after the container is started -->
