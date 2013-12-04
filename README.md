@@ -7,9 +7,11 @@ Step-by-step
 ------------
 
 1. Provision a bunch of cluster nodes with a jvm, mvn..
+2. Currently you still need to clone and build the benchtool locally, since it is not in a maven repository.
+
 
 On each node:
-1. Edit your maven settings file, adding profile for local machine config:
+2. Edit your maven settings file, adding profile for local machine config:
 
     <profile>
       <id>localhost-config</id>
@@ -27,19 +29,19 @@ On each node:
       </properties>
     </profile>
 
-2. Establish your storage location on nodes, some place like /data/tests
-3. Clone this repository into your storage location:
+3. Establish your storage location on nodes, some place like /data/tests
+4. Clone this repository into your storage location:
 
         git clone https://github.com/gregjan/fcrepo-test-profiles
         
-4. Run a maven build to verify it works:
+5. Run a maven build to verify it works:
 
         cd fcrepo-test-profiles
         mvn -U -P platform-cluster-baseline,repository-100o-50mb-3t clean verify
         
  This will start and stop the Fedora webapp within Jetty, giving it the chosen configuration profiles.
  
-5. Run your tests by adding a workflow profile:
+6. Run your tests by adding a workflow profile:
 
         mvn -U -P platform-cluster-baseline,repository-100o-50mb-3t,workflow-profile clean verify
 
