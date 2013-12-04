@@ -209,9 +209,9 @@
             <type>embedded</type>
             <systemProperties>
               <jms.port>${jms.port}</jms.port>
-              <stomp.port>${stomp.port}</stomp.port>
-              <STOP.PORT>${stop.port}</STOP.PORT>
-              <STOP.KEY>cargo-test-profiles</STOP.KEY>
+              <!-- <stomp.port>${stomp.port}</stomp.port>-->
+              <!-- <STOP.PORT>${stop.port}</STOP.PORT>
+              <STOP.KEY>cargo-test-profiles</STOP.KEY> -->
               
               <!-- cluster config -->
               <jgroups.tcp.address>${jgroups.tcp.address}</jgroups.tcp.address>
