@@ -37,14 +37,20 @@
            local config activeByDefault. YMMV, depending upon
            if a shared home directory is mapped on nodes.-->
       <properties>
+        <!-- This hostname is used as the target server for tests, may be a load balancer. -->
+        <fedora.host>mycluster.example.com</fedora.host>
+        <http.port>51200</http.port>
         <!-- local node storage -->
         <fcrepo.store.fast>/data/tests/stores</fcrepo.store.fast>
         <fcrepo.store.slow>/data/tests/stores</fcrepo.store.slow>
         <!-- local node ip -->
         <jgroups.tcp.address>127.0.0.1</jgroups.tcp.address>
-        <!-- cluster host name, port -->
-        <jgroups.tcpping.initial_hosts>locahost.localdomain[7800]</jgroups.tcpping.initial_hosts>
+        <!-- cluster host name, ports -->
+        <jgroups.tcpping.initial_hosts>mycluster.example.com[7800]</jgroups.tcpping.initial_hosts>
         <max.memory>2g</max.memory>
+        <jms.port>51201</jms.port>
+        <stomp.port>51202</stomp.port>
+        <stop.port>51203</stop.port>
       </properties>
     </profile>
   
@@ -73,9 +79,9 @@
     <profile>
       <id>setup-100o-50mb-3t</id>
       <properties>
-        <data.size>52428800</data.size>
-        <number.objects>100</number.objects>
-        <threads>3</threads>
+        <setup.data.size>52428800</setup.data.size>
+        <setup.number.objects>100</setup.number.objects>
+        <setup.threads>3</setup.threads>
       </properties>
     </profile>
     
@@ -86,6 +92,16 @@
         <data.size>52428800</data.size>
         <number.objects>100</number.objects>
         <threads>3</threads>
+      </properties>
+    </profile>
+    
+    <!-- simulating thumbnail data -->
+    <profile>
+      <id>repository-10000o-50k-10t</id>
+      <properties>
+        <data.size>51200</data.size>
+        <number.objects>10000</number.objects>
+        <threads>10</threads>
       </properties>
     </profile>
     
@@ -108,10 +124,10 @@
                 <input message="Start other cluster nodes, then press Return key to continue..."/>
                 <taskdef name="benchrun" classname="org.fcrepo.test.profiles.ant.Benchrun" classpath="target/classes"/>
                 <!-- setup tasks go here if we ever need them.. -->
-                <benchrun datasize="${data.size}" numObjects="${number.objects}" threads="${threads}" operation="ingest" uri="http://localhost:${test.port}/fedora"/>
-                <benchrun datasize="${data.size}" numObjects="${number.objects}" threads="${threads}" operation="read" uri="http://localhost:${test.port}/fedora"/>
-                <benchrun datasize="${data.size}" numObjects="${number.objects}" threads="${threads}" operation="update" uri="http://localhost:${test.port}/fedora"/>
-                <benchrun datasize="${data.size}" numObjects="${number.objects}" threads="${threads}" operation="delete" uri="http://localhost:${test.port}/fedora"/>
+                <benchrun datasize="${data.size}" numObjects="${number.objects}" threads="${threads}" operation="ingest" uri="http://${fedora.host}:${http.port}/fedora"/>
+                <benchrun datasize="${data.size}" numObjects="${number.objects}" threads="${threads}" operation="read" uri="http://${fedora.host}:${http.port}/fedora"/>
+                <benchrun datasize="${data.size}" numObjects="${number.objects}" threads="${threads}" operation="update" uri="http://${fedora.host}:${http.port}/fedora"/>
+                <benchrun datasize="${data.size}" numObjects="${number.objects}" threads="${threads}" operation="delete" uri="http://${fedora.host}:${http.port}/fedora"/>
               </tasks>
             </configuration>
             <goals>
@@ -181,7 +197,7 @@
         <configuration>
           <configuration>
             <properties>
-              <cargo.servlet.port>${test.port}</cargo.servlet.port>
+              <cargo.servlet.port>${http.port}</cargo.servlet.port>
               <cargo.jvmargs>-Xmx${max.memory}</cargo.jvmargs>
             </properties>
           </configuration>
