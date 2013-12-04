@@ -38,15 +38,15 @@
            if a shared home directory is mapped on nodes.-->
       <properties>
         <!-- This hostname is used as the target server for tests, may be a load balancer. -->
-        <fedora.host>mycluster.example.com</fedora.host>
+        <fedora.host>localhost</fedora.host>
         <http.port>51200</http.port>
         <!-- local node storage -->
-        <fcrepo.store.fast>/data/tests/stores</fcrepo.store.fast>
-        <fcrepo.store.slow>/data/tests/stores</fcrepo.store.slow>
+        <fcrepo.store.fast>target/stores</fcrepo.store.fast>
+        <fcrepo.store.slow>target/stores</fcrepo.store.slow>
         <!-- local node ip -->
         <jgroups.tcp.address>127.0.0.1</jgroups.tcp.address>
         <!-- cluster host name, ports -->
-        <jgroups.tcpping.initial_hosts>mycluster.example.com[7800]</jgroups.tcpping.initial_hosts>
+        <jgroups.tcpping.initial_hosts>localhost[7800]</jgroups.tcpping.initial_hosts>
         <jms.port>51201</jms.port>
         <stomp.port>51202</stomp.port>
         <stop.port>51203</stop.port>
@@ -59,20 +59,20 @@
       <properties>
         <max.memory>2g</max.memory>
         <fcrepo.ispn.numOwners>2</fcrepo.ispn.numOwners>
-        <fcrepo.infinispan.cache_configuration>classpath:/clustered/infinispan.xml</fcrepo.infinispan.cache_configuration>
-        <fcrepo.modeshape.configuration>classpath:/clustered/repository.json</fcrepo.modeshape.configuration>
-        <fcrepo.ispn.jgroups.configuration>classpath:/clustered/jgroups-fcrepo-tcp.xml</fcrepo.ispn.jgroups.configuration>
+        <fcrepo.infinispan.cache_configuration>config/infinispan/clustered/infinispan.xml</fcrepo.infinispan.cache_configuration>
+        <fcrepo.modeshape.configuration>classpath:config/clustered/repository.json</fcrepo.modeshape.configuration>
+        <fcrepo.ispn.jgroups.configuration>config/jgroups-fcrepo-tcp.xml</fcrepo.ispn.jgroups.configuration>
       </properties>
     </profile>
     <profile>
-      <id>platform-cluster-fast</id>
+      <id>platform-cluster-leveldb</id>
       <!-- activate this profile when you want maven to filter stock cluster config files -->
       <properties>
         <max.memory>2g</max.memory>
         <fcrepo.ispn.numOwners>1</fcrepo.ispn.numOwners>
-        <fcrepo.infinispan.cache_configuration>target/classes/clustered/infinispan.xml</fcrepo.infinispan.cache_configuration>
-        <fcrepo.modeshape.configuration>target/classes/clustered/repository.json</fcrepo.modeshape.configuration>
-        <fcrepo.ispn.jgroups.configuration>target/classes/clustered-tcp/jgroups-fcrepo-tcp.xml</fcrepo.ispn.jgroups.configuration>
+        <fcrepo.infinispan.cache_configuration>config/infinispan/leveldb/infinispan.xml</fcrepo.infinispan.cache_configuration>
+        <fcrepo.modeshape.configuration>classpath:config/clustered/repository.json</fcrepo.modeshape.configuration>
+        <fcrepo.ispn.jgroups.configuration>config/jgroups-fcrepo-tcp.xml</fcrepo.ispn.jgroups.configuration>
       </properties>
     </profile>
   
@@ -195,7 +195,7 @@
       <plugin>
         <groupId>org.codehaus.cargo</groupId>
         <artifactId>cargo-maven2-plugin</artifactId>
-        <version>1.3.1</version>
+        <version>1.4.5</version>
         <configuration>
           <configuration>
             <properties>
@@ -207,15 +207,21 @@
           <container>
             <containerId>jetty9x</containerId>
             <type>embedded</type>
+            <timeout>120000</timeout>
             <systemProperties>
               <jms.port>${jms.port}</jms.port>
-              <!-- <stomp.port>${stomp.port}</stomp.port>-->
-              <!-- <STOP.PORT>${stop.port}</STOP.PORT>
-              <STOP.KEY>cargo-test-profiles</STOP.KEY> -->
+              <stomp.port>${stomp.port}</stomp.port>
+              <STOP.PORT>${stop.port}</STOP.PORT>
+              <STOP.KEY>cargo-test-profiles</STOP.KEY>
               
               <!-- cluster config -->
               <jgroups.tcp.address>${jgroups.tcp.address}</jgroups.tcp.address>
               <jgroups.tcpping.initial_hosts>${jgroups.tcpping.initial_hosts}</jgroups.tcpping.initial_hosts>
+              
+              <!-- config files -->
+              <fcrepo.infinispan.cache_configuration>${fcrepo.infinispan.cache_configuration}</fcrepo.infinispan.cache_configuration>
+              <fcrepo.modeshape.configuration>${fcrepo.modeshape.configuration}</fcrepo.modeshape.configuration>
+              <fcrepo.ispn.jgroups.configuration>${fcrepo.ispn.jgroups.configuration}</fcrepo.ispn.jgroups.configuration>
               
               <!-- fedora storage -->
               <fcrepo.ispn.numOwners>${fcrepo.ispn.numOwners}</fcrepo.ispn.numOwners>
@@ -234,6 +240,7 @@
               <properties>
                 <context>fedora</context>
               </properties>
+              <pingURL>http://${fedora.host}:${http.port}/fedora/rest/</pingURL>
             </deployable>
           </deployables>
           <!-- Don't wait, execute the tests after the container is started -->
