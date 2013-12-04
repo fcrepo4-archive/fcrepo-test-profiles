@@ -47,9 +47,6 @@
         <jgroups.tcp.address>127.0.0.1</jgroups.tcp.address>
         <!-- cluster host name, ports -->
         <jgroups.tcpping.initial_hosts>localhost[7800]</jgroups.tcpping.initial_hosts>
-        <jms.port>51201</jms.port>
-        <stomp.port>51202</stomp.port>
-        <stop.port>51203</stop.port>
       </properties>
     </profile>
   
@@ -171,27 +168,6 @@
       </resource>
     </resources>
     <plugins>
-<!--       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>reserve-network-port</id>
-            <goals>
-              <goal>reserve-network-port</goal>
-            </goals>
-            <phase>process-resources</phase>
-            <configuration>
-              <portNames>
-                <portName>test.port</portName>
-                <portName>jms.port</portName>
-                <portName>stomp.port</portName>
-                <portName>stop.port</portName>
-              </portNames>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin> -->
       <plugin>
         <groupId>org.codehaus.cargo</groupId>
         <artifactId>cargo-maven2-plugin</artifactId>
@@ -209,9 +185,9 @@
             <type>embedded</type>
             <timeout>120000</timeout>
             <systemProperties>
-              <jms.port>${jms.port}</jms.port>
-              <stomp.port>${stomp.port}</stomp.port>
-              <STOP.PORT>${stop.port}</STOP.PORT>
+              <jms.port>51201</jms.port>
+              <stomp.port>51202</stomp.port>
+              <STOP.PORT>51203</STOP.PORT>
               <STOP.KEY>cargo-test-profiles</STOP.KEY>
               
               <!-- cluster config -->
@@ -277,7 +253,6 @@
     <repository>
       <id>fcrepo-snapshot</id>
       <name>Fcrepo Snapshot Repository</name>
-      <!--url>https://oss.sonatype.org/service/local/repositories/snapshots/content</url-->
       <url>http://oss.sonatype.org/content/repositories/snapshots/</url>
       <releases>
         <enabled>false</enabled>
