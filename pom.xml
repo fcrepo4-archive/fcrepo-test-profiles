@@ -7,7 +7,7 @@
   <packaging>jar</packaging>
 
   <name>fcrepo-test-profiles</name>
-  
+ 
   <dependencies>
     <dependency>
       <groupId>org.fcrepo</groupId>
@@ -47,7 +47,6 @@
         <jgroups.tcp.address>127.0.0.1</jgroups.tcp.address>
         <!-- cluster host name, ports -->
         <jgroups.tcpping.initial_hosts>mycluster.example.com[7800]</jgroups.tcpping.initial_hosts>
-        <max.memory>2g</max.memory>
         <jms.port>51201</jms.port>
         <stomp.port>51202</stomp.port>
         <stop.port>51203</stop.port>
@@ -58,7 +57,8 @@
     <profile>
       <id>platform-cluster-baseline</id>
       <properties>
-        <number.of.hosts>2</number.of.hosts>
+        <max.memory>2g</max.memory>
+        <fcrepo.ispn.numOwners>2</fcrepo.ispn.numOwners>
         <fcrepo.infinispan.cache_configuration>classpath:/clustered/infinispan.xml</fcrepo.infinispan.cache_configuration>
         <fcrepo.modeshape.configuration>classpath:/clustered/repository.json</fcrepo.modeshape.configuration>
         <fcrepo.ispn.jgroups.configuration>classpath:/clustered/jgroups-fcrepo-tcp.xml</fcrepo.ispn.jgroups.configuration>
@@ -68,7 +68,8 @@
       <id>platform-cluster-fast</id>
       <!-- activate this profile when you want maven to filter stock cluster config files -->
       <properties>
-        <number.of.hosts>1</number.of.hosts>
+        <max.memory>2g</max.memory>
+        <fcrepo.ispn.numOwners>1</fcrepo.ispn.numOwners>
         <fcrepo.infinispan.cache_configuration>target/classes/clustered/infinispan.xml</fcrepo.infinispan.cache_configuration>
         <fcrepo.modeshape.configuration>target/classes/clustered/repository.json</fcrepo.modeshape.configuration>
         <fcrepo.ispn.jgroups.configuration>target/classes/clustered-tcp/jgroups-fcrepo-tcp.xml</fcrepo.ispn.jgroups.configuration>
@@ -216,6 +217,7 @@
               <jgroups.tcpping.initial_hosts>${jgroups.tcpping.initial_hosts}</jgroups.tcpping.initial_hosts>
               
               <!-- fedora storage -->
+              <fcrepo.ispn.numOwners>${fcrepo.ispn.numOwners}</fcrepo.ispn.numOwners>
               <fcrepo.ispn.repo.CacheDirPath>${fcrepo.store.slow}/fir</fcrepo.ispn.repo.CacheDirPath>
               <fcrepo.modeshape.index.location>${fcrepo.store.fast}/fmi</fcrepo.modeshape.index.location>
               <fcrepo.ispn.binary.CacheDirPath>${fcrepo.store.slow}/fib</fcrepo.ispn.binary.CacheDirPath>
