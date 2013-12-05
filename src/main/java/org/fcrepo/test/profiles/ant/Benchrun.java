@@ -72,12 +72,12 @@ public class Benchrun extends Task {
     public void execute() throws BuildException {
         log.info("executing benchtool:");
         final HashMap<String, String> m = new HashMap<String, String>();
-        m.put("f", uri);
-        m.put("n", String.valueOf(numObjects));
-        m.put("s", String.valueOf(dataSize));
-        m.put("t", String.valueOf(threads));
-        m.put("a", action);
-        m.put("l", logpath);
+        m.put("-f", uri);
+        m.put("-n", String.valueOf(numObjects));
+        m.put("-s", String.valueOf(dataSize));
+        m.put("-t", String.valueOf(threads));
+        m.put("-a", action);
+        m.put("-l", logpath);
 
         final ArrayList<String> l = new ArrayList<String>();
         for (final String e : m.keySet()) {
