@@ -80,7 +80,7 @@
       <properties>
         <setup.data.size>52428800</setup.data.size>
         <setup.number.objects>100</setup.number.objects>
-        <setup.threads>3</setup.threads>
+        <setup.threads>10</setup.threads>
       </properties>
     </profile>
     
@@ -90,7 +90,7 @@
       <properties>
         <data.size>52428800</data.size>
         <number.objects>100</number.objects>
-        <threads>3</threads>
+        <threads>10</threads>
       </properties>
     </profile>
     
