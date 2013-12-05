@@ -17,15 +17,16 @@ On each node:
       <id>localhost-config</id>
       <activation><activeByDefault>true</activeByDefault></activation>
       <properties>
+      
+        <!-- this should be an apache host, running mod_proxy to load balance f4 nodes -->
+        <fedora.host>fcrepo-access.example.com</fedora.host>
+        
         <!-- local node storage, by default within target -->
         <fcrepo.store.fast>target/stores</fcrepo.store.fast>
         <fcrepo.store.slow>target/stores</fcrepo.store.slow>
-        <!-- your local node ip -->
-        <jgroups.tcp.address>172.27.244.223</jgroups.tcp.address>
+        
         <!-- your cluster host name, port -->
         <jgroups.tcpping.initial_hosts>Fedora4-Master.example.com[7800]</jgroups.tcpping.initial_hosts>
-        <!-- cargo will give this much memory to the jetty container -->
-        <max.memory>2g</max.memory>
       </properties>
     </profile>
 
