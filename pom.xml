@@ -8,6 +8,10 @@
 
   <name>fcrepo-test-profiles</name>
  
+  <properties>
+    <http.port>51200</http.port>
+  </properties>
+  
   <dependencies>
     <dependency>
       <groupId>org.fcrepo</groupId>
@@ -28,24 +32,20 @@
   </dependencies>
   
   <profiles>
-  
+ 
     <profile>
-      <id>node-config-example</id>
-      <!-- local test machine configuration items -->
-      <!-- put a profile like this in your maven settings.xml file
-           then configure a storage directory. You can make your
-           local config activeByDefault. YMMV, depending upon
-           if a shared home directory is mapped on nodes.-->
+      <id>localhost-config-example</id>
       <properties>
-        <!-- This hostname is used as the target server for tests, may be a load balancer. -->
-        <fedora.host>localhost</fedora.host>
-        <http.port>51200</http.port>
-        <!-- local node storage -->
+      
+        <!-- this should be an apache host, running mod_proxy to load balance f4 nodes -->
+        <fedora.host>fcrepo-access.example.com</fedora.host>
+        
+        <!-- local node storage, by default within target -->
         <fcrepo.store.fast>target/stores</fcrepo.store.fast>
         <fcrepo.store.slow>target/stores</fcrepo.store.slow>
-        <!-- local node ip is passed in as the host.ip system property -->
-        <!-- cluster host name, ports -->
-        <jgroups.tcpping.initial_hosts>localhost[7800]</jgroups.tcpping.initial_hosts>
+        
+        <!-- your cluster host name, port -->
+        <jgroups.tcpping.initial_hosts>fedora4-master.example.com[7800]</jgroups.tcpping.initial_hosts>
       </properties>
     </profile>
   
@@ -60,6 +60,7 @@
         <fcrepo.ispn.jgroups.configuration>${project.build.outputDirectory}/jgroups-fcrepo-tcp.xml</fcrepo.ispn.jgroups.configuration>
       </properties>
     </profile>
+    
     <profile>
       <id>platform-cluster-leveldb</id>
       <!-- activate this profile when you want maven to filter stock cluster config files -->
