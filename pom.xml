@@ -9,6 +9,7 @@
   <name>fcrepo-test-profiles</name>
  
   <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <http.port>51200</http.port>
   </properties>
   
@@ -54,7 +55,7 @@
       <id>platform-cluster-baseline</id>
       <properties>
         <max.memory>2g</max.memory>
-        <fcrepo.ispn.numOwners>2</fcrepo.ispn.numOwners>
+        <fcrepo.ispn.numOwners>1</fcrepo.ispn.numOwners>
         <fcrepo.infinispan.cache_configuration>config/infinispan/clustered/infinispan.xml</fcrepo.infinispan.cache_configuration>
         <fcrepo.modeshape.configuration>classpath:config/clustered/repository.json</fcrepo.modeshape.configuration>
         <fcrepo.ispn.jgroups.configuration>${project.build.outputDirectory}/jgroups-fcrepo-tcp.xml</fcrepo.ispn.jgroups.configuration>
@@ -122,10 +123,10 @@
                 <input message="Start other cluster nodes, then press Return key to continue..."/>
                 <taskdef name="benchrun" classname="org.fcrepo.test.profiles.ant.Benchrun" classpath="target/classes"/>
                 <!-- setup tasks go here if we ever need them.. -->
-                <benchrun datasize="${data.size}" numObjects="${number.objects}" threads="${threads}" operation="ingest" uri="http://${fedora.host}:${http.port}/fedora"/>
-                <benchrun datasize="${data.size}" numObjects="${number.objects}" threads="${threads}" operation="read" uri="http://${fedora.host}:${http.port}/fedora"/>
-                <benchrun datasize="${data.size}" numObjects="${number.objects}" threads="${threads}" operation="update" uri="http://${fedora.host}:${http.port}/fedora"/>
-                <benchrun datasize="${data.size}" numObjects="${number.objects}" threads="${threads}" operation="delete" uri="http://${fedora.host}:${http.port}/fedora"/>
+                <benchrun datasize="${data.size}" numObjects="${number.objects}" threads="${threads}" action="ingest" uri="http://${fedora.host}:${http.port}/fedora"/>
+                <benchrun datasize="${data.size}" numObjects="${number.objects}" threads="${threads}" action="read" uri="http://${fedora.host}:${http.port}/fedora"/>
+                <benchrun datasize="${data.size}" numObjects="${number.objects}" threads="${threads}" action="update" uri="http://${fedora.host}:${http.port}/fedora"/>
+                <benchrun datasize="${data.size}" numObjects="${number.objects}" threads="${threads}" action="delete" uri="http://${fedora.host}:${http.port}/fedora"/>
               </tasks>
             </configuration>
             <goals>
@@ -145,10 +146,6 @@
       </build>
     </profile>
   </profiles>
-
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
   
   <build>
     <resources>
@@ -219,24 +216,7 @@
               <!-- <pingURL>http://${host.ip}:${http.port}/fedora/rest/</pingURL> -->
             </deployable>
           </deployables>
-          <!-- Don't wait, execute the tests after the container is started -->
         </configuration>
-        <!--executions>
-          <execution>
-            <id>start-container</id>
-            <phase>pre-integration-test</phase>
-            <goals>
-              <goal>start</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>stop-container</id>
-            <phase>post-integration-test</phase>
-            <goals>
-              <goal>stop</goal>
-            </goals>
-          </execution>
-        </executions-->
       </plugin>
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>

@@ -1,8 +1,10 @@
 package org.fcrepo.test.profiles.ant;
 
+import java.util.HashMap;
+
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
-import org.fcrepo.bench.BenchToolFC4;
+import org.fcrepo.bench.BenchTool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,9 +23,11 @@ public class Benchrun extends Task {
 
     private int threads = 1;
 
-    private String operation = "ingest";
+    private String action = "ingest";
 
     private String uri = "localhost:8080";
+
+    private String logpath = "/tmp/bench-tool-logs";
 
     public void setUri(final String uri) {
         this.uri = uri;
@@ -47,12 +51,16 @@ public class Benchrun extends Task {
         this.dataSize = x;
     }
 
-    public void setOperation(final String op) {
-        this.operation = op;
+    public void setAction(final String op) {
+        this.action = op;
     }
 
     public void setThreads(final int threads) {
         this.threads = threads;
+    }
+
+    public void setLogpath(final String logpath) {
+        this.logpath = logpath;
     }
 
     /*
@@ -62,11 +70,19 @@ public class Benchrun extends Task {
     @Override
     public void execute() throws BuildException {
         log.info("executing benchtool:");
+        final HashMap<String, String> m = new HashMap<String, String>();
+        m.put("f", uri);
+        m.put("n", String.valueOf(numObjects));
+        m.put("s", String.valueOf(dataSize));
+        m.put("t", String.valueOf(threads));
+        m.put("a", action);
+        m.put("l", logpath);
+
         final String[] args =
                 new String[] {uri, String.valueOf(numObjects),
                         String.valueOf(dataSize), String.valueOf(threads),
-                        operation};
-        BenchToolFC4.main(args);
+                        action};
+        BenchTool.main(args);
     }
 
 }
