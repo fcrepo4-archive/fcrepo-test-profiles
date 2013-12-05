@@ -57,7 +57,7 @@
         <fcrepo.ispn.numOwners>2</fcrepo.ispn.numOwners>
         <fcrepo.infinispan.cache_configuration>config/infinispan/clustered/infinispan.xml</fcrepo.infinispan.cache_configuration>
         <fcrepo.modeshape.configuration>classpath:config/clustered/repository.json</fcrepo.modeshape.configuration>
-        <fcrepo.ispn.jgroups.configuration>target/classes/jgroups-fcrepo-tcp.xml</fcrepo.ispn.jgroups.configuration>
+        <fcrepo.ispn.jgroups.configuration>${project.build.outputDirectory}/jgroups-fcrepo-tcp.xml</fcrepo.ispn.jgroups.configuration>
       </properties>
     </profile>
     <profile>
@@ -68,7 +68,7 @@
         <fcrepo.ispn.numOwners>1</fcrepo.ispn.numOwners>
         <fcrepo.infinispan.cache_configuration>config/infinispan/leveldb/infinispan.xml</fcrepo.infinispan.cache_configuration>
         <fcrepo.modeshape.configuration>classpath:config/clustered/repository.json</fcrepo.modeshape.configuration>
-        <fcrepo.ispn.jgroups.configuration>target/classes/jgroups-fcrepo-tcp.xml</fcrepo.ispn.jgroups.configuration>
+        <fcrepo.ispn.jgroups.configuration>${project.build.outputDirectory}/jgroups-fcrepo-tcp.xml</fcrepo.ispn.jgroups.configuration>
       </properties>
     </profile>
   
