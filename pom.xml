@@ -76,7 +76,7 @@
   
     <!-- A setup profile tells tests how many objects of what type to preload, before tests -->
     <profile>
-      <id>setup-100o-50mb-3t</id>
+      <id>setup-100o-50mb-10t</id>
       <properties>
         <setup.data.size>52428800</setup.data.size>
         <setup.number.objects>100</setup.number.objects>

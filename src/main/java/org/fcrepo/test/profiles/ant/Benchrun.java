@@ -1,5 +1,6 @@
 package org.fcrepo.test.profiles.ant;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.apache.tools.ant.BuildException;
@@ -78,11 +79,12 @@ public class Benchrun extends Task {
         m.put("a", action);
         m.put("l", logpath);
 
-        final String[] args =
-                new String[] {uri, String.valueOf(numObjects),
-                        String.valueOf(dataSize), String.valueOf(threads),
-                        action};
-        BenchTool.main(args);
+        final ArrayList<String> l = new ArrayList<String>();
+        for (final String e : m.keySet()) {
+            l.add(e);
+            l.add(m.get(e));
+        }
+        BenchTool.main(l.toArray(new String[] {}));
     }
 
 }
