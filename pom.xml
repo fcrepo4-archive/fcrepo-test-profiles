@@ -220,7 +220,7 @@
           </deployables>
           <!-- Don't wait, execute the tests after the container is started -->
         </configuration>
-        <executions>
+        <!--executions>
           <execution>
             <id>start-container</id>
             <phase>pre-integration-test</phase>
@@ -235,7 +235,7 @@
               <goal>stop</goal>
             </goals>
           </execution>
-        </executions>
+        </executions-->
       </plugin>
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
