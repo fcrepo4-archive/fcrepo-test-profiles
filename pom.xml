@@ -43,8 +43,7 @@
         <!-- local node storage -->
         <fcrepo.store.fast>target/stores</fcrepo.store.fast>
         <fcrepo.store.slow>target/stores</fcrepo.store.slow>
-        <!-- local node ip -->
-        <jgroups.tcp.address>127.0.0.1</jgroups.tcp.address>
+        <!-- local node ip is passed in as the host.ip system property -->
         <!-- cluster host name, ports -->
         <jgroups.tcpping.initial_hosts>localhost[7800]</jgroups.tcpping.initial_hosts>
       </properties>
@@ -191,8 +190,8 @@
               <STOP.KEY>cargo-test-profiles</STOP.KEY>
               
               <!-- cluster config -->
-              <jgroups.tcp.address>${jgroups.tcp.address}</jgroups.tcp.address>
-              <jgroups.tcpping.initial_hosts>${host.ip}</jgroups.tcpping.initial_hosts>
+              <jgroups.tcp.address>${host.ip}</jgroups.tcp.address>
+              <jgroups.tcpping.initial_hosts>${jgroups.tcpping.initial_hosts}</jgroups.tcpping.initial_hosts>
               
               <!-- config files -->
               <fcrepo.infinispan.cache_configuration>${fcrepo.infinispan.cache_configuration}</fcrepo.infinispan.cache_configuration>
